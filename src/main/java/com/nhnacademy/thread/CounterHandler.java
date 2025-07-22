@@ -16,33 +16,47 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class CounterHandler implements Runnable  {
+    private final Object monitor;
     private final long countMaxSize;
 
     private long count;
 
-    public CounterHandler(long countMaxSize) {
-        if(countMaxSize<=0){
-            throw new IllegalArgumentException();
+    public CounterHandler(long countMaxSize, Object monitor) {
+        //TODO#4 countMaxSize<=0 or monitor 객체가 null 이면 IllegalArgumentException이 발생 합니다.
+        if (countMaxSize <= 0 || monitor == null) {
+            throw new IllegalArgumentException("countMaxSize must be greater than 0 and monitor must not be null");
         }
-
         this.countMaxSize = countMaxSize;
-        this.count=0l;
+        this.monitor = monitor;
+
+
+        //TODO#5  countMaxSize, count, monitor 변수를 초기화 합니다.
+        this.count = 0;
+
     }
 
     @Override
     public void run() {
+        //TODO#6 Thread에 의해서 run() method가 호출되면 무한 대기 합니다. monitor객체를 이용해서 구현하세요
+        //monitor는 여러 Thread가 동시에 접근할 수 없도록  접근을 제어해야 합니다.
+        synchronized (monitor) {
+            try {
+                log.debug("Thread {} is waiting", Thread.currentThread().getName());
+                monitor.wait(); // 대기 상태로 진입
+            } catch (InterruptedException e) {
+                log.error("Thread interrupted while waiting", e);
+            }
+        }
+
         do {
             try {
                 Thread.sleep(1000);
-                count++;
-                log.debug("thread:{},state:{},count:{}",Thread.currentThread().getName(),Thread.currentThread().getState(),count);
             } catch (InterruptedException e) {
-                log.debug("{} - state - {}  - interupted 발생",Thread.currentThread().getName(),Thread.currentThread().getState());
                 throw new RuntimeException(e);
             }
+            count++;
+            log.debug("thread:{},state:{},count:{}",Thread.currentThread().getName(),Thread.currentThread().getState(),count);
 
-            //TODO#2 해당 thread가 isInterrupted() 상태가 false 일 while loop를 실행 할 수 있도록 조건을 추가하세요
-        }while(!Thread.currentThread().isInterrupted() && count < countMaxSize);
+        }while (count<countMaxSize);
     }
-
 }
