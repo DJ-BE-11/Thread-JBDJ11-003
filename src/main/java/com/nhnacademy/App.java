@@ -12,21 +12,31 @@
 
 package com.nhnacademy;
 
-import com.nhnacademy.thread.AlertDaemon;
-import com.nhnacademy.thread.Counter;
+import com.nhnacademy.thread.CounterThread;
 
-/**
- * Hello world!
- *
- */
-public class App {
-    public static void main(String[] args) {
-        //TODO#5 - AlertDaemon Thread를 초기화하고 start() 메서드를 호출해서 실행 합니다.
-        AlertDaemon alertDaemon = new AlertDaemon();
-        alertDaemon.start();
+public class App
+{
+    public static void main( String[] args )
+    {
+        //TODO#5 CounterThread 객체를 생성 합니다.
+        // thread-name :  my-counter, countMaxSize :10
+        CounterThread counterThread = new CounterThread("name", 10);
 
-        Thread.currentThread().setName("my-thread");
-        Counter counter = new Counter(10);
-        counter.run();
+        //TODO#6 counterThread를 시작 합니다.
+        counterThread.start();
+        for(int i = 0; i<10; ++i) {
+            System.out.println(i);
+            try{
+                Thread.sleep(1000);
+            } catch (InterruptedException e){
+
+            }
+        }
+
+        try{
+            counterThread.join();
+        } catch (InterruptedException e){
+            e.printStackTrace();
+        }
     }
 }
