@@ -22,7 +22,6 @@ public class App
 
     public static void main( String[] args )
     {
-        Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 
         //shardCounter 객체를 0으로 초기화 합니다.
         SharedCounter sharedCounter = new SharedCounter(0l);
