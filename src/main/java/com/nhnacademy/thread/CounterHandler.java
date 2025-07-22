@@ -31,7 +31,6 @@ public class CounterHandler implements Runnable  {
 
     @Override
     public void run() {
-
         do {
             try {
                 Thread.sleep(1000);
@@ -39,7 +38,7 @@ public class CounterHandler implements Runnable  {
                 throw new RuntimeException(e);
             }
             count++;
-            log.debug("thread:{},state:{},count:{}",Thread.currentThread().getName(), Thread.currentThread().getState(),count);
+            log.debug("thread:{},state:{},count:{}",Thread.currentThread().getName(),Thread.currentThread().getState(),count);
         }while (count<countMaxSize);
     }
 }
