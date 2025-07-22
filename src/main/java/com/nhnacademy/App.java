@@ -12,31 +12,29 @@
 
 package com.nhnacademy;
 
-import com.nhnacademy.thread.CounterThread;
+import com.nhnacademy.thread.CounterHandler;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class App
 {
     public static void main( String[] args )
     {
-        //TODO#5 CounterThread 객체를 생성 합니다.
-        // thread-name :  my-counter, countMaxSize :10
-        CounterThread counterThread = new CounterThread("name", 10);
-
-        //TODO#6 counterThread를 시작 합니다.
-        counterThread.start();
-        for(int i = 0; i<10; ++i) {
-            System.out.println(i);
-            try{
-                Thread.sleep(1000);
-            } catch (InterruptedException e){
-
-            }
+        CounterHandler counterHandler = new CounterHandler(10l);
+        Thread thread = new Thread(counterHandler);
+        log.debug("thread-state:{}",thread.getState());
+        thread.setName("my-counter");
+        thread.start();
+        //TODO#1 thread가 실행 후 (1-10 count 증가 후  아래 로그가 출력 됩니다.)
+        //thread.join()을 호출 하면 thread가 종료될 때 까지 main thread가 대기하게 됩니다.
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            log.error("Thread interrupted", e);
+            Thread.currentThread().interrupt(); // Restore interrupted status
         }
 
-        try{
-            counterThread.join();
-        } catch (InterruptedException e){
-            e.printStackTrace();
-        }
+        log.debug("Application exit!");
+        log.debug("thread-state:{}",thread.getState());
     }
 }

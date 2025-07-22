@@ -15,21 +15,23 @@ package com.nhnacademy.thread;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class Counter {
+public class CounterHandler implements Runnable  {
     private final long countMaxSize;
+
     private long count;
 
-    public Counter(long countMaxSize) {
-
-        if(countMaxSize <=0){
+    public CounterHandler(long countMaxSize) {
+        if(countMaxSize<=0){
             throw new IllegalArgumentException();
         }
 
         this.countMaxSize = countMaxSize;
-        this.count = 0l;
+        this.count=0l;
     }
 
+    @Override
     public void run() {
+
         do {
             try {
                 Thread.sleep(1000);
@@ -37,7 +39,7 @@ public class Counter {
                 throw new RuntimeException(e);
             }
             count++;
-            log.debug("name:{},count:{}",Thread.currentThread().getName(),count);
+            log.debug("thread:{},state:{},count:{}",Thread.currentThread().getName(), Thread.currentThread().getState(),count);
         }while (count<countMaxSize);
     }
 }
