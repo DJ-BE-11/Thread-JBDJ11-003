@@ -4,8 +4,10 @@ public class AlertDaemon extends Thread {
 
     public AlertDaemon() {
         //TODO#1 - setDaemon() 메서드를 이용해서 daemon thread로 설정
+        setDaemon(true);
 
         //TODO#2 - Thread 이름을 alert-daemon으로 설정
+        super.setName("alert-daemon");
 
 
         // ShutdownHook: JVM이 종료되기 직전에 실행되는 Thread
@@ -14,6 +16,7 @@ public class AlertDaemon extends Thread {
         Runtime.getRuntime().addShutdownHook(
                 new Thread(() -> {
                     //TODO#3 AlertDaemon Thread가 종료 시점에 적절한 메시지를 출력합니다.
+                    System.out.println("thread-shutdown");
                 })
         );
     }
@@ -21,6 +24,15 @@ public class AlertDaemon extends Thread {
     @Override
     public void run() {
         //TODO#4 1초에 한 번씩 Alert Daemon message를 출력 합니다.
+        System.out.println(super.getName());
+        try {
+            while(true){
+                Thread.sleep(1000);
+                System.out.println(super.getName());
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
